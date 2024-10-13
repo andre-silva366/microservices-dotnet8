@@ -1,3 +1,5 @@
+using AutoMapper;
+using GeekShopping.ProductAPI.Config;
 using GeekShopping.ProductAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 01 - Acesso a configuração MySQL
 var connectionString = builder.Configuration["MySQLConnection:MySQLConnectionString"];
+builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+// 02 - Adicionando o Autommaper
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Add services to the container.
 
@@ -15,9 +23,6 @@ builder.Services.AddSwaggerGen(sw =>
 {
     sw.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "GeekShopping" });
 });
-
-// 02 - Adicionando serviço mysql
-builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 var app = builder.Build();
 
