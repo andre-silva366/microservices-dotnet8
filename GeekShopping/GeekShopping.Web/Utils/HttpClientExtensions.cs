@@ -24,4 +24,12 @@ public static class HttpClientExtensions
         content.Headers.ContentType = contentType;
         return httpClient.PostAsync(url, content);
     }
+
+    public static Task<HttpResponseMessage> PutAsJson<T>(this HttpClient httpClient, string url, T data)
+    {
+        var dataAsString = JsonSerializer.Serialize(data);
+        var content = new StringContent(dataAsString);
+        content.Headers.ContentType = contentType;
+        return httpClient.PutAsync(url, content);
+    }
 }
