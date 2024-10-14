@@ -8,30 +8,51 @@ public class ProductService : IProductService
 {
     private readonly HttpClient _client;
     public const string BasePath = "api/v1/product";
+
+    public ProductService(HttpClient client)
+    {
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
+
     public async Task<IEnumerable<ProductModel>> FindAllProducts()
     {
         var response = await _client.GetAsync(BasePath);
-        return await response.RedContentAs<List<ProductModel>>();
+        return await response.ReadContentAs<List<ProductModel>>();
     }
 
     public async Task<ProductModel> FindProductById(long id)
     {
         var response = await _client.GetAsync($"{BasePath}/{id}");
-        return await response.RedContentAs<ProductModel>();
+        return await response.ReadContentAs<ProductModel>();
     }
 
     public async Task<ProductModel> CreateProduct(ProductModel model)
     {
-        throw new NotImplementedException();
+        var response = await _client.PostAsJson(BasePath,model);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("Something went wrong when calling API");
+        }
+        return await response.ReadContentAs<ProductModel>();
     }
 
     public async Task<ProductModel> UpdateteProduct(ProductModel model)
     {
-        throw new NotImplementedException();
+        var response = await _client.PutAsJson(BasePath, model);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("Something went wrong when calling API");            
+        }
+        return await response.ReadContentAs<ProductModel>();
     }
     public async Task<bool> DeleteProductById(long id)
     {
-        throw new NotImplementedException();
+        var response = await _client.DeleteAsync($"{BasePath}/{id}");
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception("Something went wrong when calling API");
+        }
+        return await response.ReadContentAs<bool>();
     }
     
 }
