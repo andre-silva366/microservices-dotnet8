@@ -12,8 +12,9 @@ public class Product : BaseEntity
     [StringLength(150)]
     public string Name { get; set; }
 
-    [Column("price",TypeName = "decimal(10,2)")]
+    [Column("price")]
     [Required]
+    [DisplayFormat(DataFormatString = "{0:N}", ApplyFormatInEditMode = true)]
     [Range(1, 10000)]
     public decimal Price { get; set; }
 

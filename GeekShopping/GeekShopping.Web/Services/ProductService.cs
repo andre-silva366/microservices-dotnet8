@@ -36,7 +36,7 @@ public class ProductService : IProductService
         return await response.ReadContentAs<ProductModel>();
     }
 
-    public async Task<ProductModel> UpdateteProduct(ProductModel model)
+    public async Task<ProductModel> UpdateProduct(ProductModel model)
     {
         var response = await _client.PutAsJson(BasePath, model);
         if (!response.IsSuccessStatusCode)
